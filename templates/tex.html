@@ -1,0 +1,32 @@
+<html>
+<form action="/tex" method="post">
+    桌子:<br>
+    <input type="text" id="table" value="">
+    <br>
+    用户名:<br>
+    <input type="text" id="user" value="">
+    <br><br>
+    <input type="submit" id="submit_btn" value="Submit">
+</form> 
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    func_hook=function(ajaxurl, datajson, succ_msg="操作成功", err_msg="网络错误", wait_msg="等待处理"){
+        //$("#auto_box").text(wait_msg);
+        $.ajax({
+            type: 'POST',
+            url: ajaxurl,
+            data: datajson,
+            dataType: 'json',
+            success: function(data) {
+                // $("#auto_box").text(succ_msg);
+                // $("#answer").val(data["data"]);
+            },
+            error: function(xhr, type) {
+                // $("#auto_box").text(err_msg);
+            }
+    })}
+    $("#submit_btn").click(function(){
+        func_hook("/tex", {"table":$("#table").val(), "user":$("#user").val()})
+    });
+</script>
+</html>

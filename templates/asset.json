@@ -1,0 +1,28 @@
+{
+    "section": [
+      {
+        "type": "image",
+        "key": "2C",
+        "url": "assets/cards/2C.png",
+        "overwrite": false
+      },
+      {
+        "type": "image",
+        "key": "2H",
+        "url": "assets/cards/2H.png",
+        "overwrite": false
+      },
+      {
+        "type": "image",
+        "key": "2D",
+        "url": "assets/cards/2D.png",
+        "overwrite": false
+      },
+      {
+        "type": "image",
+        "key": "2S",
+        "url": "assets/cards/2S.png",
+        "overwrite": false
+      }
+    ]
+}

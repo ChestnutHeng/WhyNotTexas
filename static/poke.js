@@ -51,7 +51,7 @@ function preload ()
 
     this.load.scenePlugin({
         key: 'rexuiplugin',
-        url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+        url: rootDir + 'rexuiplugin.min.js',
         sceneKey: 'rexUI'
     });
 
@@ -226,6 +226,8 @@ function RespHandler(res, father){
             case 'openCards':
                 openCards(res['river'])
                 father.isSetRiverCount = res['river'].length;
+            case 'endGame':
+                endGame(res['msgQ'])
             default:
                 
         };
@@ -240,6 +242,10 @@ function RespHandler(res, father){
         for(var i = 0; i < river.length; i++){
             father.rivers[i].setTexture(river[i]);
         }
+    };
+
+    function endGame(msg) {
+        
     };
 }
 

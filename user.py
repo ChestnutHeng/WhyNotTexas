@@ -25,6 +25,21 @@ USERS = [
         "id": '888',
         "name": '--',
         "password": generate_password_hash('==')
+    },
+    {
+        "id": '4',
+        "name": 'sun',
+        "password": generate_password_hash('ji')  
+    },
+    {
+        "id": '5',
+        "name": 'da',
+        "password": generate_password_hash('ji')  
+    },
+    {
+        "id": '5',
+        "name": 'jiang',
+        "password": generate_password_hash('ji')  
     }
 ]
 

@@ -15,8 +15,9 @@ pokerName = IntEnum('PokerName', ('RoyalFlush', 'StraightFlush', 'FourOfAKind', 
 pokerZhCn = {pokerName.RoyalFlush: '皇家同花顺', pokerName.StraightFlush: '同花顺', pokerName.FourOfAKind:  '四条',
              pokerName.FullHouse: '葫芦', pokerName.Flush: '同花', pokerName.Straight: '顺子',
              pokerName.ThreeOfAKind: '三条', pokerName.TwoPair: '两对',
-             pokerName.OnePair: '一对', pokerName.StraightFlush: '高牌'}
+             pokerName.OnePair: '一对', pokerName.HighCard: '高牌'}
 
+DIZHU = 1
 
 class Card:
     color = ''
@@ -46,51 +47,105 @@ class Card:
 class Table:
     pokers = []
     rivers = []
+    # user info
     users = {}
+    # user sit, as long with table exists
+    userEmptySit = list(range(1, 11))
+    userSit = []
+    bankerIndex = 0
+    turnIndex = 0
+    sitUidMap = {}
+    # all deck cards deal pointers
     needle = 0
+    # river cards pointers
     riverPoint = 0
+    # is all user prepered
+    isPrepared = False
+    IsEnd = False
+    # max stake
+    maxStake = DIZHU
+    # how many people fold
+    foldCount = 0
+    # next n action will open cards
+    openActionStep = -1
     def __init__(self):
         for v in pokerSet:
             c = Card()
             c.parse(v)
             self.pokers.append(c)
-        self.shuffle()
+        self._shuffle()
+        self.userEmptySit = list(range(1, 11))
+        self.userSit = []
 
-    def shuffle(self):
+    def _shuffle(self):
         self.needle = 0
         self.riverPoint = 0
         random.shuffle(self.pokers)
         self.rivers = None
 
-    def getCards(self, num):
+    def _getCards(self, num):
         if self.needle + num >= len(self.pokers):
-            self.shuffle()
+            self._shuffle()
         cards = self.pokers[self.needle: self.needle+num]
         self.needle += num
         return cards
 
     def deal(self):
         if not self.rivers:
-            self.river()
-        return self.getCards(2)
+            self._river()
+        return self._getCards(2)
 
-    def river(self):
+    def _river(self):
         if not self.rivers:
-            self.rivers = self.getCards(5)
+            self.rivers = self._getCards(5)
         return self.rivers
     
     def sitUser(self,uid):
+        if not self.userEmptySit:
+            return 'no empty sit!'
+        sitIndex = self.userEmptySit.pop(0)
         u = User(uid)
+        u.sitIndex = sitIndex
         self.users[uid] = u
+        self.userSit.append(sitIndex)
+        self.sitUidMap[sitIndex] = uid
         return u.userID
+    
+    def prepareUser(self, uid):
+        if uid in self.users:
+            if not self.users[uid].isPrepared:
+                self.users[uid].isPrepared = True
+            else:
+                return False
+        isAllPrepared = True
+        for u in self.users:
+            if not self.users[u].isPrepared:
+                isAllPrepared = False
+        self.isPrepared = isAllPrepared
+        return True
 
     def leaveUser(self,uid):
-        del self.users[uid]
+        if uid in self.users:
+            sitIndex = self.users[uid].sitIndex
+            self.userEmptySit.insert(0, sitIndex)
+            self.userSit.remove(sitIndex)
+            del self.users[uid]
+            return ''
+        else:
+            return 'del %s not found user' % (uid)
     
     def startGame(self):
-        self.shuffle()
+        if not self.isPrepared:
+            return 'some user not prepared'
+        self._shuffle()
         for uid in self.users:
             self.users[uid].pick(self.deal())
+            self.users[uid].table_money = DIZHU
+        self.turnIndex = self.bankerIndex + 1 % len(self.userSit)
+        self.maxStake = DIZHU
+        self.foldCount = 0
+        self.resetSteps()
+        return ''
     
     def userHandCards(self, uid):
         if uid in self.users:
@@ -105,16 +160,77 @@ class Table:
             self.riverPoint += 1
     
     def riverCards(self):
-        return self.rivers[:self.riverPoint]
+        if self.isPrepared:
+            return self.rivers[:self.riverPoint]
+        else:
+            return []
     
     def endGame(self):
         if self.riverPoint < 5:
             self.riverPoint = 5
         res = Judge.judge(self, self.users)
+        self.bankerIndex = (self.bankerIndex + 1) % len(self.userSit)
+        # feng chen
+        allMoney = 0
+        for uid in self.users:
+            allMoney += self.users[uid].table_money
+        for uid in self.users:
+            self.users[uid].isPrepared = False
+            self.users[uid].money -= self.users[uid].table_money
+            if uid in res:
+                self.users[uid].money += int(allMoney / len(res))
         return res
     
     def people(self):
         return self.users.keys
+
+    # turnIndex + 1
+    def setNextTurnIndex(self):
+        self.turnIndex = (self.turnIndex + 1) % len(self.userSit)
+        moveuid = self.sitUidMap[self.userSit[self.turnIndex]]
+        user : User = self.users[moveuid]
+        if user.fold:
+            self.setNextTurnIndex()
+    
+    # now act user's id
+    def needMoveUser(self):
+        uid = self.sitUidMap[self.userSit[self.turnIndex]]
+        return self.users[uid]
+
+    def resetSteps(self):
+        self.openActionStep = len(self.userSit) - self.foldCount
+
+    def userMove(self, uid, ops, extra):
+        moveuid = self.sitUidMap[self.userSit[self.turnIndex]]
+        if moveuid != uid:
+            return None, 'NotYourTurn'
+        user : User = self.users[uid]
+        hook_func = ''
+        if ops == 'add':
+            self.maxStake = extra
+            user.table_money = self.maxStake
+            self.resetSteps()
+            self.openActionStep -= 1
+            self.setNextTurnIndex()
+            return None, hook_func
+        if ops == 'check':
+            user.table_money = self.maxStake
+        if ops == 'fold':
+            if user.table_money == self.maxStake:
+                return None, 'CantFold'
+            user.fold = True
+            self.foldCount += 1
+            if len(self.userSit) - self.foldCount <= 1:
+                return self.endGame(), 'endGame'
+        self.openActionStep -= 1
+        if self.openActionStep == 0:
+            if self.riverPoint == 5:
+                return self.endGame(), 'endGame'
+            self.openCards()
+            self.resetSteps()
+            hook_func = 'openCards'
+        self.setNextTurnIndex()
+        return None, hook_func
 
 
 class User():
@@ -122,7 +238,13 @@ class User():
     userID = ''
     kind = None
     cards = []
-    failed = False
+    fold = False
+    isPrepared = False
+    # sit
+    sitIndex = -1
+    # money
+    money = 0
+    table_money = 0
     def __init__(self, seed=''):
         if seed:
             self.userID = seed
@@ -132,7 +254,7 @@ class User():
         self.hand = cards
     
     def __repr__(self):
-        return '{%s:[%s]%s}' % (self.userID, self.kind, self.cards)
+        return '{uid:%s|kind:%s|cards:%s|hand:%s|fold:%s}' % (self.userID, self.kind, self.cards, self.hand, self.fold)
 
 
 class PairCard():
@@ -147,21 +269,21 @@ class Judge:
     @staticmethod
     def judge(table, users, handler=None):
         ansArr = []
-        maxuser = list(users.keys())[0]
+        maxuser = None
         maxusers = set()
         for uid in users:
-            if users[uid].failed:
+            if users[uid].fold:
                 continue
-            kind, cards = Judge.judge7(table.rivers + users[uid].hand)
+            kind, cards = Judge.judge7(table.riverCards() + users[uid].hand)
             users[uid].kind = kind
             users[uid].cards = cards
             ansArr.append(users[uid])
-            if Judge.judgeRes(users[uid], users[maxuser]) > 0:
+            if maxuser is None or Judge.judgeRes(users[uid], users[maxuser]) > 0:
                 maxuser = uid
             if handler:
                 handler.handle(kind, cards)
         for uid in users:
-            if users[uid].failed:
+            if users[uid].fold:
                 continue
             if Judge.judgeRes(users[uid], users[maxuser]) == 0:
                 maxusers.add(uid)
@@ -174,6 +296,10 @@ class Judge:
             return 1
         else:
             for i in range(0, 5):
+                if x.cards[i].number == 1 and y.cards[i].number != 1:
+                    return 1
+                if y.cards[i].number == 1 and x.cards[i].number != 1:
+                    return -1
                 if x.cards[i].number < y.cards[i].number:
                     return -1
                 elif x.cards[i].number > y.cards[i].number:
@@ -309,7 +435,7 @@ def main():
     i = 0
     C = 100000
     while i < C:
-        d.shuffle()
+        d._shuffle()
         for user in users:
             user.pick(d.deal())
         #print(d.rivers)

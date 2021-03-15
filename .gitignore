@@ -1,0 +1,6 @@
+node_modules
+.vscode
+__pycache__
+*.log
+package-lock.json
+*.ans

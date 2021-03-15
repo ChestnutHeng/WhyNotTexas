@@ -1,0 +1,49 @@
+{
+    "req":{
+        "version" : 0.1,
+        "func" : "getState",
+        "state" : 0,
+        "add_money" : 1,
+    },
+    "resp" :{
+        "version" : 0.1,
+        "retcode" : 0,
+        "msg " : "err",
+        "hook_func" : ["showUserHands"],
+        "user_hand" : ["♣A", "♦5"],
+        "user_money" : 10,
+        "user_table_money" : 6,
+        "river" :[],
+        "textbox" : ["Li Joined", "LiLeft"],
+        "active_btn" : ["check", "add", "fold"],
+        "moving_uid" : "2",
+        "msgQ" : {}
+    },
+    "req_func" : [
+        // 心跳，一秒钟一次
+        "tick",
+        // 准备
+        "prepare",
+        "check",
+        "add",
+        "fold"
+    ],
+    "resp_func" : [
+        // 准备完成触发
+        "showUserHands",
+        // 所有都check触发
+        "openCards",
+        // 结束触发
+        "endGame"
+    ],
+    "msg":{
+        "hook_func" : "showUserHands",
+        "winner" : ["1"],
+        "other_hand" : {
+            "1":["♣A", "♦5"],
+            "2":["♣A", "♦5"]
+        }
+    }
+}
+
+

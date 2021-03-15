@@ -1,1 +1,1 @@
-sudo nohup gunicorn -b 127.0.0.1:4640 router:app &
+sudo nohup gunicorn -w 4 -b 127.0.0.1:4640 router:app &

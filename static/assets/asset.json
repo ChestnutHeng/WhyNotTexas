@@ -1,0 +1,331 @@
+{
+    "pokes": {
+        "files": [
+            {
+                "type": "image",
+                "key": "\u26666",
+                "url": "../static/assets/cards/6D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26655",
+                "url": "../static/assets/cards/5H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26606",
+                "url": "../static/assets/cards/6S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26637",
+                "url": "../static/assets/cards/7C.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2660A",
+                "url": "../static/assets/cards/AS.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2666A",
+                "url": "../static/assets/cards/AD.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26659",
+                "url": "../static/assets/cards/9H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26658",
+                "url": "../static/assets/cards/8H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26636",
+                "url": "../static/assets/cards/6C.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26667",
+                "url": "../static/assets/cards/7D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26607",
+                "url": "../static/assets/cards/7S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26654",
+                "url": "../static/assets/cards/4H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2663A",
+                "url": "../static/assets/cards/AC.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2665Q",
+                "url": "../static/assets/cards/QH.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2663J",
+                "url": "../static/assets/cards/JC.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u266610",
+                "url": "../static/assets/cards/10D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u266010",
+                "url": "../static/assets/cards/10S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26653",
+                "url": "../static/assets/cards/3H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2660K",
+                "url": "../static/assets/cards/KS.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2666K",
+                "url": "../static/assets/cards/KD.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2660J",
+                "url": "../static/assets/cards/JS.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2666J",
+                "url": "../static/assets/cards/JD.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26652",
+                "url": "../static/assets/cards/2H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2663K",
+                "url": "../static/assets/cards/KC.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u266310",
+                "url": "../static/assets/cards/10C.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26633",
+                "url": "../static/assets/cards/3C.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2665J",
+                "url": "../static/assets/cards/JH.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26602",
+                "url": "../static/assets/cards/2S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26662",
+                "url": "../static/assets/cards/2D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2663Q",
+                "url": "../static/assets/cards/QC.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u266510",
+                "url": "../static/assets/cards/10H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26603",
+                "url": "../static/assets/cards/3S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26663",
+                "url": "../static/assets/cards/3D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2665K",
+                "url": "../static/assets/cards/KH.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2660Q",
+                "url": "../static/assets/cards/QS.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2666Q",
+                "url": "../static/assets/cards/QD.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26632",
+                "url": "../static/assets/cards/2C.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26639",
+                "url": "../static/assets/cards/9C.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26604",
+                "url": "../static/assets/cards/4S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26657",
+                "url": "../static/assets/cards/7H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26664",
+                "url": "../static/assets/cards/4D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26608",
+                "url": "../static/assets/cards/8S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26668",
+                "url": "../static/assets/cards/8D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26635",
+                "url": "../static/assets/cards/5C.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26634",
+                "url": "../static/assets/cards/4C.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u2665A",
+                "url": "../static/assets/cards/AH.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26609",
+                "url": "../static/assets/cards/9S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26669",
+                "url": "../static/assets/cards/9D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "red_back",
+                "url": "../static/assets/cards/red_back.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26656",
+                "url": "../static/assets/cards/6H.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26605",
+                "url": "../static/assets/cards/5S.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26665",
+                "url": "../static/assets/cards/5D.png",
+                "overwrite": false
+            },
+            {
+                "type": "image",
+                "key": "\u26638",
+                "url": "../static/assets/cards/8C.png",
+                "overwrite": false
+            }
+        ]
+    },
+    "meta": {
+        "generated": "1401380327373",
+        "app": "Phaser 3 Asset Packer",
+        "url": "https://phaser.io",
+        "version": "1.0",
+        "copyright": "Photon Storm Ltd. 2018"
+    }
+}

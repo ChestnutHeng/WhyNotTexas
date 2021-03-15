@@ -2,8 +2,13 @@
 <html lang="en"> 
 <head> 
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 10</title>
+    <title>Why Not Phaser</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="//cdn.jsdelivr.net/npm/phaser@3.52.0/dist/phaser.min.js"></script>
+    <script src="//raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js"> </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
+    <script src="../static/poke.js" type="module"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -11,8 +16,6 @@
     </style>
 </head>
 <body>
-
-<script src="./poke.js"></script>
-
+<a href='{{ url_for('logout')}}'>登出</a>
 </body>
 </html>

@@ -4,6 +4,7 @@ from enum import IntEnum
 import traceback
 import copy
 import functools
+import copy
 
 pokerSet = ['♠A', '♠2', '♠3', '♠4', '♠5', '♠6', '♠7', '♠8', '♠9', '♠10', '♠J', '♠Q', '♠K',
             '♥A', '♥2', '♥3', '♥4', '♥5', '♥6', '♥7', '♥8', '♥9', '♥10', '♥J', '♥Q', '♥K',
@@ -141,7 +142,7 @@ class Table:
         for uid in self.users:
             self.users[uid].pick(self.deal())
             self.users[uid].table_money = DIZHU
-        self.turnIndex = self.bankerIndex + 1 % len(self.userSit)
+        self.setNextTurnIndex()
         self.maxStake = DIZHU
         self.foldCount = 0
         self.resetSteps()
@@ -166,19 +167,34 @@ class Table:
             return []
     
     def endGame(self):
-        if self.riverPoint < 5:
-            self.riverPoint = 5
-        res = Judge.judge(self, self.users)
+        # judge not fold user
+        notFoldUser = {}
+        for uid in self.users:
+            if not self.users[uid].fold:
+                notFoldUser[uid] = self.users[uid]
+        res = set()
+        if len(notFoldUser) > 1:
+            res = Judge.judge(self, notFoldUser)
+        else:
+            for uid in notFoldUser:
+                res = uid
         self.bankerIndex = (self.bankerIndex + 1) % len(self.userSit)
-        # feng chen
+        # money
         allMoney = 0
         for uid in self.users:
             allMoney += self.users[uid].table_money
         for uid in self.users:
-            self.users[uid].isPrepared = False
             self.users[uid].money -= self.users[uid].table_money
             if uid in res:
                 self.users[uid].money += int(allMoney / len(res))
+        self.savedUsers = copy.deepcopy(self.users)
+        self.savefoldCount = self.foldCount
+        # clean
+        for uid in self.users:
+            self.users[uid].reset()
+        self.isPrepared = False
+        self.foldCount = 0
+        self.openActionStep = -1
         return res
     
     def people(self):
@@ -204,10 +220,12 @@ class Table:
         moveuid = self.sitUidMap[self.userSit[self.turnIndex]]
         if moveuid != uid:
             return None, 'NotYourTurn'
+        if not self.isPrepared:
+            return None, 'NotPrepared'
         user : User = self.users[uid]
         hook_func = ''
         if ops == 'add':
-            self.maxStake = extra
+            self.maxStake = user.table_money + int(extra)
             user.table_money = self.maxStake
             self.resetSteps()
             self.openActionStep -= 1
@@ -253,8 +271,16 @@ class User():
     def pick(self, cards):
         self.hand = cards
     
+    def reset(self):
+        self.hand = []
+        self.kind = None
+        self.cards = []
+        self.fold = False
+        self.isPrepared = False
+        self.table_money = 0
+    
     def __repr__(self):
-        return '{uid:%s|kind:%s|cards:%s|hand:%s|fold:%s}' % (self.userID, self.kind, self.cards, self.hand, self.fold)
+        return '{uid:%s|kind:%s|cards:%s|hand:%s|fold:%s|isPrepared:%s}' % (self.userID, self.kind, self.cards, self.hand, self.fold, self.isPrepared)
 
 
 class PairCard():

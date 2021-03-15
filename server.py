@@ -47,17 +47,19 @@ class ServerHandler:
         return True, resp, table
     
     def _defer(self, ctx : Context, resp, table, user):
+        if table.isPrepared:
+            resp['moving_uid'] = table.needMoveUser().userID
+            resp['river'] = []
+            for v in table.riverCards():
+                resp['river'].append(v.__repr__())
+            resp['user_hand'] = []
+            for card in table.userHandCards(user.userID):
+                resp['user_hand'].append(card.__repr__())
         resp['textbox'] = self.msgBox.travel(ctx.uid)
         resp['msgQ'] = self.msgBox.consume(ctx.uid)
-        resp['moving_uid'] = table.needMoveUser().userID
-        resp['river'] = []
-        for v in table.riverCards():
-            resp['river'].append(v.__repr__())
-        resp['user_hand'] = []
-        for card in table.userHandCards(user.userID):
-            resp['user_hand'].append(card.__repr__())
         resp['user_table_money'] = user.table_money
         resp['user_money'] = user.money
+        resp['isPrepared'] = table.isPrepared
         return resp
 
     def ticker(self, ctx : Context):
@@ -81,9 +83,8 @@ class ServerHandler:
         self.msgBox.push('%s 准备完成.\n' % (get_name_by_id(me.userID)))
         if table.isPrepared:
             table.startGame()
-            self.msgBox.push('全部准备完成\n')
-            self.msgBox.push('开始！\n')
-            resp['hook_func'] = ['showUserHands']
+            self.msgBox.push('全部准备完成\n开始！\n')
+            resp['hook_func'] = ['showUserHands', 'startGame']
         return self._defer(ctx, resp, table, me)
     
     def checkAddFold(self, ctx : Context, ops : str, extra):
@@ -92,22 +93,33 @@ class ServerHandler:
         if not ok:
             return resp
         me : poke.User = table.users[ctx.uid]
-        nowuser : poke.User = table.needMoveUser()
+
+        if not table.isPrepared:
+            resp['msg'] = 'not all prepared'
+            self.msgBox.push('%s 请所有玩家准备.\n' % (get_name_by_id(me.userID)))
+            return self._defer(ctx, resp, table, me)
         # not you
+        nowuser : poke.User = table.needMoveUser()
         if nowuser.userID != me.userID:
             resp['msg'] = 'not your turn'
             self.msgBox.push('%s 请等待%s行动.\n' % (get_name_by_id(me.userID), get_name_by_id(nowuser.userID)))
             return self._defer(ctx, resp, table, me)
-        if ops == 'add':
-            self.msgBox.push('%s 加了%s美元.\n' % (get_name_by_id(me.userID), extra))
-        elif ops == 'check':
-            self.msgBox.push('%s 跟了.\n' % (get_name_by_id(me.userID)))
+        # hook
         winner, hook = table.userMove(me.userID, ops, extra)
         if hook == 'endGame':
             return self.endGame(ctx, winner, table, me, resp)
         elif hook == 'openCards':
             self.msgBox.pushMsg({"hook_func" : "openCards"})
-        if ops == 'fold':
+        elif hook == 'NotPrepared':
+            self.msgBox.push('%s 请所有玩家准备.\n' % (get_name_by_id(me.userID)))
+        elif hook == 'NotYourTurn':
+            self.msgBox.push('%s 请等待玩家行动.\n' % (get_name_by_id(me.userID)))
+        # msgbox
+        if ops == 'add':
+            self.msgBox.push('%s 加了%s美元.\n' % (get_name_by_id(me.userID), extra))
+        elif ops == 'check':
+            self.msgBox.push('%s 跟了.\n' % (get_name_by_id(me.userID)))
+        elif ops == 'fold':
             if hook != 'CantFold':
                 self.msgBox.push('%s 飞了.\n' % (get_name_by_id(me.userID)))
             else:
@@ -116,18 +128,26 @@ class ServerHandler:
     
     def endGame(self, ctx, winner, table, me, resp):
         for winid in winner:
-            self.msgBox.push('%s 以牌型 %s [%s]获胜\n' % (get_name_by_id(winid), table.users[winid].cards, poke.pokerZhCn[table.users[winid].kind]))
+            if table.riverPoint == 5 and table.savefoldCount != 1:
+                self.msgBox.push('%s 以牌型 %s [%s]获胜\n' % (get_name_by_id(winid), table.savedUsers[winid].cards,
+                 poke.pokerZhCn[table.savedUsers[winid].kind]))
+            else:
+                self.msgBox.push('%s 暗暗获胜\n' % (get_name_by_id(winid)))
         otherHands = {}
-        for uid in table.users:
+        for uid in table.savedUsers:
             otherHands[uid] = []
-            for card in table.users[uid].hand:
+            for card in table.savedUsers[uid].hand:
                 otherHands[uid].append(card.__repr__())
             if uid in winner:
                 continue
-            if table.users[uid].fold:
+            if table.savedUsers[uid].fold:
                 self.msgBox.push('%s 飞牌\n' % (get_name_by_id(uid)))
             else:
-                self.msgBox.push('%s 牌型 %s[%s] 落败\n' % (get_name_by_id(uid), table.users[uid].cards, poke.pokerZhCn[table.users[uid].kind]))
+                if table.riverPoint == 5:
+                    self.msgBox.push('%s 牌型 %s[%s] 落败\n' % (get_name_by_id(uid), table.savedUsers[uid].cards,
+                     poke.pokerZhCn[table.savedUsers[uid].kind]))
+                else:
+                    self.msgBox.push('%s 暗暗落败\n' % (get_name_by_id(uid)))
         self.msgBox.pushMsg({'winner':list(winner), 'other_hand' : otherHands, "hook_func" : "endGame"})
         return self._defer(ctx, resp, table, me)
 
@@ -174,6 +194,19 @@ if __name__ == '__main__':
     printl(s.ticker(Context('1', '1')))
     printl(s.ticker(Context('2', '1')))
     printl(s.ticker(Context('3', '1')))
+
+    print(s.prepare(Context('1', '1')))
+    printl(s.ticker(Context('1', '1')))
+    printl(s.ticker(Context('2', '1')))
+    printl(s.ticker(Context('3', '1')))
+    printl(s.checkAddFold(Context('3', '1'), 'check', None))
+    print(s.prepare(Context('2', '1')))
+    print(s.prepare(Context('3', '1')))
+
+    printl(s.checkAddFold(Context('1', '1'), 'add', '1'))
+    printl(s.checkAddFold(Context('2', '1'), 'fold', None))
+    printl(s.checkAddFold(Context('3', '1'), 'fold', None))
+
         
         
         

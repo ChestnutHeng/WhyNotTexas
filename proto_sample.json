@@ -29,6 +29,7 @@
         "fold"
     ],
     "resp_func" : [
+        "startGame",
         // 准备完成触发
         "showUserHands",
         // 所有都check触发

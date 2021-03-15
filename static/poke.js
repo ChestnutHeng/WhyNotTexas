@@ -208,7 +208,7 @@ function RespHandler(res, father){
             handleHook(res['hook_func'][i])
         }
     }
-    if (res['user_hand'] && !father.isSetHand){
+    if (res['user_hand'] && res['user_hand'].length == 2 && !father.isSetHand){
         showUserHands(res['user_hand']);
         father.isSetHand = true;
     }
@@ -220,14 +220,15 @@ function RespHandler(res, father){
 
     function handleHook(hook){
         switch(hook){
-            case 'showUserHands':
-                showUserHands(res['user_hand']);
-                father.isSetHand = true;
+            // case 'showUserHands':
+            //     showUserHands(res['user_hand'])
             case 'openCards':
                 openCards(res['river'])
                 father.isSetRiverCount = res['river'].length;
             case 'endGame':
                 endGame(res['msgQ'])
+            case 'startGame':
+                startGame()
             default:
                 
         };
@@ -247,6 +248,13 @@ function RespHandler(res, father){
     function endGame(msg) {
         
     };
+    function startGame() {
+        for(var i = 0; i < father.rivers.length; i++){
+            father.rivers[i].setTexture('red_back');
+        }
+        father.isSetHand = false;
+        father.isSetRiverCount = 0;
+    };
 }
 
 function FoldButtonClickHandler(father) {
@@ -259,7 +267,7 @@ function FoldButtonClickHandler(father) {
 function AddButtonClickHandler(father) {
     console.log('click add');
     $.ajax({
-        data: JSON.stringify({"func":'add', 'add_money':1}),
+        data: JSON.stringify({"func":'add', 'add_money':'1'}),
     });
 }
 

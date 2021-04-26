@@ -46,7 +46,11 @@ function preload ()
     this.load.image('sky', rootDir + 'sky.png');
     this.load.pack('pokes', rootDir + 'asset.json', null, this);
 
-    this.load.spritesheet('button', rootDir + 'button_sprite_sheet.png', { frameWidth: 193, frameHeight: 71 })
+    this.load.spritesheet('allButton', rootDir + 'btnall.png', { frameWidth: 188, frameHeight: 66 })
+    this.load.spritesheet('addButton', rootDir + 'add.png', { frameWidth: 188, frameHeight: 66 })
+    this.load.spritesheet('prepareButton', rootDir + 'prepare.png', { frameWidth: 188, frameHeight: 66 })
+    this.load.spritesheet('foldButton', rootDir + 'fly.png', { frameWidth: 188, frameHeight: 66 })
+    this.load.spritesheet('checkButton', rootDir + 'check.png', { frameWidth: 188, frameHeight: 66 })
     this.load.atlas('buttonAtlas', rootDir+'button_texture_atlas.png', rootDir+'button_texture_atlas.json')
 
     this.load.scenePlugin({
@@ -107,19 +111,19 @@ function create ()
     //let msgBox = this.physics.add.Text(this.game.config.width/8, this.game.config.height/9*6, { fill: '#ff0'});
 
     let btnCheck = new Button(this, this.game.config.width/2, this.game.config.height/9*6,
-         'button', CheckButtonClickHandler, 2, 1, 0);
+         'allButton', CheckButtonClickHandler, 5, 4, 3);
     btnCheck.setOrigin(0)
 
     let btnFold = new Button(this, this.game.config.width/2, this.game.config.height/9*7.5,
-         'button', FoldButtonClickHandler, 2, 1, 0);
+         'allButton', FoldButtonClickHandler, 11, 10, 9);
     btnFold.setOrigin(0)
 
     let btnAdd = new Button(this, this.game.config.width/4*3, this.game.config.height/9*6,
-         'button', AddButtonClickHandler, 2, 1, 0);
+         'allButton', AddButtonClickHandler, 8, 7, 6);
     btnAdd.setOrigin(0)
 
     let btnPrepare = new Button(this, this.game.config.width/4*3, this.game.config.height/9*7.5,
-         'button', PrepareButtonClickHandler, 2, 1, 0);
+         'allButton', PrepareButtonClickHandler, 2, 1, 0);
     btnPrepare.setOrigin(0)
 
     // this.socket = io('ws://localhost:4640/tex/ws');

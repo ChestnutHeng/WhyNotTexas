@@ -4,3 +4,6 @@ pip3 install flask_wtf
 pip3 install flask-login 
 pip3 install gevent
 pip3 install gevent-websocket
+pip3 install flask-io
+pip3 install flask-socketio
+pip3 install flask-restful

@@ -35,6 +35,7 @@ class ServerHandler:
         self.tableMap = tableMap
         self.msgBox = boxMap
 
+    # 获取处理的uid和桌号
     def _check_ctx(self, ctx : Context):
         resp = {"msg" : "", "retcode" : 0, 'textbox': []}
         resp['myuid'] = ctx.uid
@@ -46,6 +47,7 @@ class ServerHandler:
             return False, {"msg" : "bad user", "retcode" : 2}, None
         return True, resp, table
     
+    # 结束的时候要做的：行动传给下家，重新发牌
     def _defer(self, ctx : Context, resp, table, user):
         if table.isPrepared:
             resp['moving_uid'] = table.needMoveUser().userID

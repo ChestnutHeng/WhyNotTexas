@@ -47,11 +47,11 @@ function preload ()
     this.load.pack('pokes', rootDir + 'asset.json', null, this);
 
     this.load.spritesheet('allButton', rootDir + 'btnall.png', { frameWidth: 188, frameHeight: 66 })
-    this.load.spritesheet('addButton', rootDir + 'add.png', { frameWidth: 188, frameHeight: 66 })
-    this.load.spritesheet('prepareButton', rootDir + 'prepare.png', { frameWidth: 188, frameHeight: 66 })
-    this.load.spritesheet('foldButton', rootDir + 'fly.png', { frameWidth: 188, frameHeight: 66 })
-    this.load.spritesheet('checkButton', rootDir + 'check.png', { frameWidth: 188, frameHeight: 66 })
-    this.load.atlas('buttonAtlas', rootDir+'button_texture_atlas.png', rootDir+'button_texture_atlas.json')
+    // this.load.spritesheet('addButton', rootDir + 'add.png', { frameWidth: 188, frameHeight: 66 })
+    // this.load.spritesheet('prepareButton', rootDir + 'prepare.png', { frameWidth: 188, frameHeight: 66 })
+    // this.load.spritesheet('foldButton', rootDir + 'fly.png', { frameWidth: 188, frameHeight: 66 })
+    // this.load.spritesheet('checkButton', rootDir + 'check.png', { frameWidth: 188, frameHeight: 66 })
+    // this.load.atlas('buttonAtlas', rootDir+'button_texture_atlas.png', rootDir+'button_texture_atlas.json')
 
     this.load.scenePlugin({
         key: 'rexuiplugin',
@@ -100,10 +100,23 @@ function create ()
                 thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 13, 0x7b5e57),
             },
             scroller: true,
+            header: this.rexUI.add.label({
+                height: 30,
+                orientation: 0,
+                background: this.rexUI.add.roundRectangle(0, 0, 20, 20, 0, COLOR_PRIMARY),
+                text: this.add.text(0, 0, '对战信息'),
+            }),
+            // footer: this.rexUI.add.label({
+            //     height: 30,
+
+            //     orientation: 0,
+            //     background: this.rexUI.add.roundRectangle(0, 0, 20, 20, 0, COLOR_DARK),
+            //     text: this.add.text(0, 0, 'Footer'),
+            // }),
         })
         .layout()
         .drawBounds(this.add.graphics(), 0xff0000);
-    this.textArea.setText(this.textArea.text + CreateContent(1));
+    this.textArea.appendText(CreateContent(1));
     /*
     this.clickButton = new TextButton(this, 100, 100, 'Check', { fill: '#0f0'}, () => CheckButtonClickHandler());
     this.add.existing(this.clickButton);
@@ -196,7 +209,9 @@ function RespHandler(res, father){
     console.log('father', father);
     console.log('RespHandler succ:', res);
     if (res['textbox']){
-        father.textArea.setText(father.textArea.text + res['textbox'].join('\n'));
+        father.textArea.appendText(res['textbox'].join('\n'));
+        //father.textArea.header.setText(res['textbox'][-1]);
+        father.textArea.scrollToBottom();
     };
     if (res['msgQ']){
         for(var i = 0; i < res['msgQ'].length; i++){
